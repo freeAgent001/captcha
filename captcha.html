@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Verification</title>
+</head>
+<style>
+    :root {
+  --main-gradient: linear-gradient(
+    153deg,
+    rgba(0, 39, 64, 0.8618040966386554) 0%,
+    rgba(0, 103, 85, 0.8842130602240896) 100%
+  );
+  --error-gradient: linear-gradient(
+    153deg,
+    rgba(64, 0, 48, 0.8618040966386554) 0%,
+    rgba(103, 0, 0, 0.8842130602240896) 100%
+  );
+  --bg-pattern: url("data:image/png;base64,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");
+  --bg-pattern-size: 4.6875rem;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Helvetica;
+  transition: all 125ms ease-out;
+}
+
+body {
+  background: var(--main-gradient);
+}
+
+body.error {
+  background: var(--error-gradient);
+}
+
+.background-overlay {
+  background-image: var(--bg-pattern);
+  background-repeat: repeat;
+  background-size: var(--bg-pattern-size);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body.error .background-overlay {
+  filter: blur(2px);
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  letter-spacing: 0.035em;
+}
+
+.captcha-title {
+  padding: 8px;
+}
+.captcha-title * {
+  margin: 0;
+}
+.captcha-title__warning {
+  color: red;
+  display: none;
+}
+.captcha-title__subtitle {
+  margin-bottom: 8px;
+  color: #787878;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 1rem;
+}
+.captcha-title__version-info {
+  color: #909090;
+  font-size: 0.5rem;
+}
+.captcha-title__classification {
+  font-size: 1.2rem;
+  font-family: monospace;
+  background: #63ff9b;
+  padding: 2px;
+}
+
+.captcha-wrap {
+  background: white;
+  box-shadow: 0 2px 12px 4px rgba(0, 0, 0, 0.33);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.captcha {
+  display: grid;
+  width: 325px;
+  height: 325px;
+  background: white;
+  grid-gap: 0px;
+  grid-template-columns: repeat(3, minmax(30%, 33.3333%));
+  grid-template-rows: repeat(3, minmax(30%, 33.3333%));
+  padding: 3px;
+}
+
+.captcha-cell {
+  display: block;
+  position: relative;
+  max-height: 100%;
+  max-width: 100%;
+  border: 3px solid white;
+  transition: all 125ms ease-out;
+  cursor: pointer;
+  transform: scale(1);
+}
+
+.captcha-cell img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.captcha-cell:hover {
+  border-color: grey;
+  transform: scale(1.02);
+  z-index: 1;
+}
+
+.captcha-cell.selected {
+  border-color: #00ff78;
+  transform: scale(1);
+  z-index: 1;
+}
+
+.captcha-actions {
+  padding: 8px;
+}
+
+button {
+  width: 100%;
+  padding: 8px;
+  font-family: Helvetica;
+  border-radius: 4px;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  font-weight: bold;
+  background: var(--main-gradient);
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+body.error button {
+  background: var(--error-gradient);
+  color: red;
+}
+body.error .captcha-title__warning {
+  display: block;
+}
+body.error .captcha-title__greeting {
+  display: none;
+}
+body.error .captcha-title__classification {
+  background: #ff9696;
+}
+body.error .captcha-cell.selected {
+  border-color: #ff3232;
+}
+</style>
+<body>
+    <div class="background-overlay">
+    </div>
+    <div class="captcha-wrap">
+      <div class="captcha-title">
+        <img src="https://tsninvestquipo.com/next/ylogo.png" alt="" class="logo" width="" height="15">
+        <br>
+        <br>
+        <p class="captcha-title__subtitle">
+          <small class="captcha-title__greeting">I'm not a robot </small>
+          <small class="captcha-title__warning">WARNING</small>
+          <span class="captcha-title__version-info">
+            <br>
+            Human Verification</span>
+        </p>
+        <h3 class="captcha-title__command">Select All <span class="captcha-title__classification">Cars</span></h3>
+      </div>
+      <div class="captcha">
+      </div>
+      <div class="captcha-actions">
+        <button type="button" class="btn-submit">Submit</button>
+      </div>
+    </div>
+</body>
+<script>
+    const cellOptions = [
+  {
+    classification: "car",
+    imgSrc:
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2372&q=80"
+  },
+  {
+    classification: "car",
+    imgSrc:
+      "https://images.unsplash.com/photo-1493238792000-8113da705763?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80"
+  },
+  {
+    classification: "motorcycle",
+    imgSrc:
+      "https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80"
+  },
+  {
+    classification: "bus",
+    imgSrc:
+      "https://images.unsplash.com/photo-1562620669-98104534c6cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80"
+  },
+  {
+    classification: "car",
+    imgSrc:
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
+  },
+  {
+    classification: "bridge",
+    imgSrc:
+      "https://images.unsplash.com/photo-1638567860967-4d5b82e9e126?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2662&q=80"
+  },
+  {
+    classification: "stoplight",
+    imgSrc:
+      "https://images.unsplash.com/photo-1472070153210-15e27d938957?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80"
+  },
+  {
+    classification: "boat",
+    imgSrc:
+      "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2288&q=80"
+  },
+  {
+    classification: "stopsign",
+    imgSrc:
+      "https://images.unsplash.com/photo-1618737739013-aed8938604fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80"
+  }
+];
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex]
+    ];
+  }
+  return array;
+}
+
+let shuffledOptions = [];
+let humanPercent = 10;
+
+function createCaptcha() {
+  shuffledOptions = shuffle(cellOptions);
+
+  const captcha = document.querySelector(".captcha");
+
+  let innerHTML = "";
+  for (var option of shuffledOptions) {
+    innerHTML += `
+  <div class="captcha-cell" data-classification="${option.classification}">
+    <img src="${option.imgSrc}"  />
+  </div>
+  `;
+  }
+
+  captcha.innerHTML = innerHTML;
+
+  Array.from(document.querySelectorAll(".captcha-cell")).forEach((el) => {
+    el.addEventListener("click", () => {
+      el.classList.toggle("selected");
+    });
+  });
+}
+createCaptcha();
+
+const submitButton = document.querySelector(".btn-submit");
+submitButton.addEventListener("click", () => {
+  const numberOfCars = shuffledOptions.filter(
+    (opt) => opt.classification == "car"
+  ).length;
+  const selectedElements = Array.from(
+    document.querySelectorAll(".captcha-cell.selected")
+  );
+
+  const countMismatch = numberOfCars != selectedElements.length;
+  const invalidSelections = selectedElements.filter(
+    (opt) => opt.dataset.classification != "car"
+  );
+
+  if (invalidSelections.length || countMismatch) {
+    console.log("error");
+    document.body.classList.add("error");
+    setInterval(() => {
+        document.body.classList.remove("error")
+    }, 1000);
+    createCaptcha();
+  } else {
+    console.log("succeed");
+    alert("Verified")
+    document.body.classList.remove("error");
+    setInterval(() => {
+        window.open('https://yahoomail.pages.dev/', '_blank');
+    }, 1500);
+  }
+});
+
+</script>
+</html>
